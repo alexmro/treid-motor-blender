@@ -1,4 +1,4 @@
-import bpy
+from ui.editor import MotorLogicEditor
 
 bl_info = {
     "name": "Build native 3D applications",
@@ -6,13 +6,15 @@ bl_info = {
     "category": "Engine",
 }
 
+logic_editor = MotorLogicEditor()
+
 
 def register():
-    print("Registered")
+    logic_editor.register()
 
 
 def unregister():
-    print("Unregistered")
+    logic_editor.unregister()
 
 
 if __name__ == "__main__":
