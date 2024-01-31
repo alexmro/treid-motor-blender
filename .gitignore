@@ -77,8 +77,11 @@ fabric.properties
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 
-# Ignore the blend folder, where I test things out
+# Ignore the blend folder, used for testing out things
 blend/
+
+# The engines are not part of this project
+engines/
 
 # Ignore .drafts
 .drafts/
