@@ -1,4 +1,4 @@
-from ui import editor
+from ui import editor, gizmo
 
 bl_info = {
     "name": "Build native 3D applications",
@@ -9,10 +9,12 @@ bl_info = {
 
 def register():
     editor.register()
+    gizmo.register()
 
 
 def unregister():
     editor.unregister()
+    gizmo.unregister()
 
 
 if __name__ == "__main__":
