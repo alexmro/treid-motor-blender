@@ -1,5 +1,6 @@
 import bpy
 
+from .ui import view
 from .ui import editor, gizmo
 
 bl_info = {
@@ -12,6 +13,7 @@ addon_keymaps = []
 
 
 def register():
+    view.register()
     editor.register()
     gizmo.register()
 
@@ -19,13 +21,14 @@ def register():
     kc = wm.keyconfigs.addon
     if kc:
         km = kc.keymaps.new(name='Window', region_type='WINDOW', space_type='EMPTY')
-        kmi = km.keymap_items.new(gizmo.MotorOperator.bl_idname, type='P', value='PRESS')
+        kmi = km.keymap_items.new(gizmo.MotorGizmoOperator.bl_idname, type='P', value='PRESS')
         addon_keymaps.append((km, kmi))
 
 
 def unregister():
-    editor.unregister()
     gizmo.unregister()
+    editor.unregister()
+    view.unregister()
 
     for km, kmi in addon_keymaps:
         km.keymap_items.remove(kmi)

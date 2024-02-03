@@ -1,14 +1,20 @@
+import bpy
+
 from bpy.types import GizmoGroup, Operator
 from bpy.utils import register_classes_factory
 
+from ..ui.view import switch_interactive_mode
 
-class MotorOperator(Operator):
-    bl_idname = "motor.run"
+
+class MotorGizmoOperator(Operator):
+    bl_idname = "motor.gizmo"
     bl_label = "Run scene"
-    bl_description = "Run scene"
+    bl_description = "Run scene in interactive mode"
 
     def execute(self, context):
-        print("Run scene")
+        switch_interactive_mode(True)
+
+        bpy.ops.motor.run('INVOKE_DEFAULT')
         return {'FINISHED'}
 
 
@@ -32,7 +38,7 @@ class MotorGizmoGroup(GizmoGroup):
         mpr.bl_idname = "MotorRunButton"
         mpr.icon = 'PLAY'
         mpr.draw_options = {'BACKDROP', 'OUTLINE'}
-        mpr.target_set_operator(MotorOperator.bl_idname)
+        mpr.target_set_operator(MotorGizmoOperator.bl_idname)
         mpr.alpha = 0.5
         mpr.color = 0.1, 0.5, 0.3
         mpr.color_highlight = 0.8, 1.0, 0.8
@@ -43,7 +49,7 @@ class MotorGizmoGroup(GizmoGroup):
 
 
 classes = (
-    MotorOperator,
+    MotorGizmoOperator,
     MotorGizmoGroup,
 )
 
