@@ -42,6 +42,11 @@ def switch_interactive_mode(enabled):
                         window.cursor_set("DEFAULT")
                 break
 
+    if enabled:
+        bpy.ops.view3d.view_center_camera()
+    else:
+        bpy.ops.view3d.view_lock_clear()
+
 
 class MotorRunOperator(Operator):
     bl_idname = "motor.run"
