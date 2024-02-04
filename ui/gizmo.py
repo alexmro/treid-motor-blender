@@ -11,6 +11,10 @@ class MotorGizmoOperator(Operator):
     bl_label = "Run scene"
     bl_description = "Run scene in interactive mode"
 
+    @classmethod
+    def poll(cls, context):
+        return bpy.context.mode == 'OBJECT'
+
     def execute(self, context):
         switch_interactive_mode(True)
 
@@ -27,7 +31,7 @@ class MotorGizmoGroup(GizmoGroup):
 
     @classmethod
     def poll(cls, context):
-        return True
+        return bpy.context.mode == 'OBJECT'
 
     def draw_prepare(self, context):
         self.gizmos[0].matrix_basis[0][3] = context.region.width - 30
