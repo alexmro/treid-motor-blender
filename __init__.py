@@ -2,6 +2,7 @@ import bpy
 
 from .ui import view
 from .ui import editor, gizmo
+from .utils import handlers
 
 bl_info = {
     "name": "Build native 3D applications",
@@ -13,6 +14,9 @@ addon_keymaps = []
 
 
 def register():
+    """Entry point, where everything is registered and prepared"""
+    handlers.register()
+
     view.register()
     editor.register()
     gizmo.register()
@@ -26,13 +30,16 @@ def register():
 
 
 def unregister():
+    """Everything registered at the beginning is unregistered here in the inverse order"""
+    for km, kmi in addon_keymaps:
+        km.keymap_items.remove(kmi)
+    addon_keymaps.clear()
+
     gizmo.unregister()
     editor.unregister()
     view.unregister()
 
-    for km, kmi in addon_keymaps:
-        km.keymap_items.remove(kmi)
-    addon_keymaps.clear()
+    handlers.unregister()
 
 
 if __name__ == "__main__":
