@@ -4,6 +4,23 @@ from bpy.types import Operator
 from bpy.utils import register_classes_factory
 
 
+class MotorRunOperator(Operator):
+    bl_idname = "motor.run"
+    bl_label = "Enter interactive mode"
+    bl_description = "Enter interactive mode and disable UI"
+
+    def modal(self, context, event):
+        if event.type in {'ESC'}:
+            switch_interactive_mode(False)
+            return {'CANCELLED'}
+
+        return {'RUNNING_MODAL'}
+
+    def invoke(self, context, event):
+        context.window_manager.modal_handler_add(self)
+        return {'RUNNING_MODAL'}
+
+
 def switch_interactive_mode(enabled):
     area = bpy.context.area
     window = bpy.context.window
@@ -45,23 +62,6 @@ def switch_interactive_mode(enabled):
         bpy.ops.view3d.view_center_camera()
     else:
         bpy.ops.view3d.view_lock_clear()
-
-
-class MotorRunOperator(Operator):
-    bl_idname = "motor.run"
-    bl_label = "Enter interactive mode"
-    bl_description = "Enter interactive mode and disable UI"
-
-    def modal(self, context, event):
-        if event.type in {'ESC'}:
-            switch_interactive_mode(False)
-            return {'CANCELLED'}
-
-        return {'RUNNING_MODAL'}
-
-    def invoke(self, context, event):
-        context.window_manager.modal_handler_add(self)
-        return {'RUNNING_MODAL'}
 
 
 classes = (

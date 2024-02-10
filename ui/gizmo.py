@@ -6,22 +6,6 @@ from bpy.utils import register_classes_factory
 from ..ui.view import switch_interactive_mode
 
 
-class MotorGizmoOperator(Operator):
-    bl_idname = "motor.gizmo"
-    bl_label = "Run scene"
-    bl_description = "Run scene in interactive mode"
-
-    @classmethod
-    def poll(cls, context):
-        return bpy.context.mode == 'OBJECT'
-
-    def execute(self, context):
-        switch_interactive_mode(True)
-
-        bpy.ops.motor.run('INVOKE_DEFAULT')
-        return {'FINISHED'}
-
-
 class MotorGizmoGroup(GizmoGroup):
     bl_idname = "MotorRunGizmos"
     bl_label = "Run scene"
@@ -40,7 +24,7 @@ class MotorGizmoGroup(GizmoGroup):
     def setup(self, context):
         mpr = self.gizmos.new("GIZMO_GT_button_2d")
         mpr.bl_idname = "MotorRunButton"
-        mpr.icon = 'PLAY'
+        mpr.icon = "PLAY"
         mpr.draw_options = {'BACKDROP', 'OUTLINE'}
         mpr.target_set_operator(MotorGizmoOperator.bl_idname)
         mpr.alpha = 0.5
@@ -50,6 +34,22 @@ class MotorGizmoGroup(GizmoGroup):
         mpr.scale_basis = (80 * 0.35) / 2
         mpr.use_tooltip = True
         mpr.show_drag = False
+
+
+class MotorGizmoOperator(Operator):
+    bl_idname = "motor.gizmo"
+    bl_label = "Run scene"
+    bl_description = "Run scene in interactive mode"
+
+    @classmethod
+    def poll(cls, context):
+        return bpy.context.mode == 'OBJECT' and not bpy.context.screen.is_animation_playing
+
+    def execute(self, context):
+        switch_interactive_mode(True)
+
+        bpy.ops.motor.run('INVOKE_DEFAULT')
+        return {'FINISHED'}
 
 
 classes = (
