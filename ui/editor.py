@@ -1,42 +1,14 @@
 import nodeitems_utils
 
-from bpy.types import NodeTree, NodeSocket, Node
+from bl_ui import node_add_menu
+from bpy.types import Menu
 from bpy.utils import register_class, unregister_class
 from nodeitems_utils import NodeCategory, NodeItem
 
-
-class MotorNodeTree(NodeTree):
-    bl_idname = 'MotorNodeTree'
-    bl_label = "Logic Node Editor"
-    bl_icon = 'NODETREE'
-    bl_description = "Motor logic nodes"
-
-
-class MotorActionSocket(NodeSocket):
-    bl_idname = 'MotorActionSocket'
-    bl_label = "Action Node Socket"
-
-    @classmethod
-    def draw_color_simple(cls):
-        return 1, 1, 1, 1
-
-    def draw(self, context, layout, node, text):
-        if self.is_output or self.is_linked:
-            layout.label(text=text)
-
-
-class MotorOnStartNode(Node):
-    bl_idname = 'MotorOnStartNode'
-    bl_label = "On Start"
-    bl_icon = 'AUTO'
-    use_custom_color = True
-
-    @classmethod
-    def poll(cls, ntree):
-        return ntree.bl_idname == MotorNodeTree.bl_idname
-
-    def init(self, context):
-        self.outputs.new('MotorActionSocket', "Action")
+from .nodes.console import MotorConsoleNode
+from .nodes.nodetree import MotorNodeTree
+from .nodes.onstart import MotorOnStartNode
+from .nodes.sockets import MotorActionSocket, MotorAnySocket
 
 
 class MotorNodeCategory(NodeCategory):
@@ -45,17 +17,47 @@ class MotorNodeCategory(NodeCategory):
         return context.space_data.tree_type == MotorNodeTree.bl_idname
 
 
-node_categories = [
-    MotorNodeCategory('EVENTS_NODES', 'Events', items={
-        NodeItem('MotorOnStartNode'),
-    })
-]
+class MotorApplicationCategory(NodeCategory):
+    @classmethod
+    def poll(cls, context):
+        return context.space_data.tree_type == MotorNodeTree.bl_idname
 
+    @staticmethod
+    def draw(_context, layout, _node):
+        layout.menu(MotorLogCategoryMenu.bl_idname)
+
+
+class MotorLogCategoryMenu(Menu):
+    bl_idname = "MotorLogCategoryMenu"
+    bl_label = "Log"
+
+    def draw(self, _context):
+        layout = self.layout
+
+        node_add_menu.add_node_type(layout, MotorConsoleNode.bl_idname, label=MotorConsoleNode.bl_label, poll=True)
+        node_add_menu.draw_assets_for_catalog(layout, self.bl_label)
+
+
+node_categories = [
+    MotorNodeCategory(
+        "APPLICATION_NODES", "Application", items={
+            MotorApplicationCategory('LOG', 'Log')
+        }
+    ),
+    MotorNodeCategory(
+        "EVENTS_NODES", "Events", description="User, application and system events", items={
+            NodeItem(MotorOnStartNode.bl_idname),
+        }
+    )
+]
 
 classes = (
     MotorNodeTree,
+    MotorLogCategoryMenu,
     MotorActionSocket,
-    MotorOnStartNode
+    MotorAnySocket,
+    MotorOnStartNode,
+    MotorConsoleNode,
 )
 
 
