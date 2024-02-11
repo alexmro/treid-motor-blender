@@ -3,8 +3,11 @@ import bpy
 from bpy.types import Operator
 from bpy.utils import register_classes_factory
 
+from ..core.runtime import run_scene, stop_scene
+
 
 class MotorRunOperator(Operator):
+    """Operator that enters interactive mode and runs the scene"""
     bl_idname = "motor.run"
     bl_label = "Enter interactive mode"
     bl_description = "Enter interactive mode and disable UI"
@@ -22,6 +25,7 @@ class MotorRunOperator(Operator):
 
 
 def switch_interactive_mode(enabled):
+    """Enter or exit interactive mode. Start or stop running the scene"""
     area = bpy.context.area
     window = bpy.context.window
     if area.type == 'VIEW_3D':
@@ -62,6 +66,11 @@ def switch_interactive_mode(enabled):
         bpy.ops.view3d.view_center_camera()
     else:
         bpy.ops.view3d.view_lock_clear()
+
+    if enabled:
+        run_scene()
+    else:
+        stop_scene()
 
 
 classes = (
