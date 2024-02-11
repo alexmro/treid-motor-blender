@@ -28,7 +28,7 @@ class MotorApplicationCategory(NodeCategory):
 
 
 class MotorLogCategoryMenu(Menu):
-    bl_idname = "MotorLogCategoryMenu"
+    bl_idname = "NODE_MT_MotorLogCategoryMenu"
     bl_label = "Log"
 
     def draw(self, _context):
